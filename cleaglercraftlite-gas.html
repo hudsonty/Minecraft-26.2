@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Eaglercraft Lite</title>
+  <style>
+    html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; background: #000; }
+    #game { width: 100%; height: 100%; border: 0; display: block; background: #000; }
+    #fallback { position: fixed; inset: 0; display: grid; place-items: center; background: #000; color: #fff; font: 16px Arial, sans-serif; }
+    #fallback a { color: #8bd7ff; }
+  </style>
+</head>
+<body>
+  <!-- Upload the matching large HTML file to this GitHub path, then this tiny
+       file can be pasted into a Google Apps Script HTML file. -->
+  <iframe id="game" title="Eaglercraft Lite" allow="autoplay; fullscreen; gamepad; pointer-lock; keyboard-map" allowfullscreen referrerpolicy="no-referrer" src="https://cdn.jsdelivr.net/gh/StaticQuasar931/26.2@main/cleaglercraftlite.html"></iframe>
+  <div id="fallback" hidden>Game failed to load. <a href="https://cdn.jsdelivr.net/gh/StaticQuasar931/26.2@main/cleaglercraftlite.html" target="_blank" rel="noopener">Open the game directly</a>.</div>
+  <script>
+    const frame = document.getElementById('game');
+    const fallback = document.getElementById('fallback');
+    frame.addEventListener('error', () => { frame.hidden = true; fallback.hidden = false; });
+  </script>
+</body>
+</html>

@@ -7,19 +7,41 @@
   <style>
     html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; background: #000; }
     #game { width: 100%; height: 100%; border: 0; display: block; background: #000; }
-    #fallback { position: fixed; inset: 0; display: grid; place-items: center; background: #000; color: #fff; font: 16px Arial, sans-serif; }
-    #fallback a { color: #8bd7ff; }
+    #status { position: fixed; inset: 0; display: grid; place-items: center; background: #000; color: #fff; font: 16px Arial, sans-serif; z-index: 2; }
+    #status a { color: #8bd7ff; }
+    #status.error { color: #ffb4b4; }
   </style>
 </head>
 <body>
-  <!-- Upload the matching large HTML file to this GitHub path, then this tiny
-       file can be pasted into a Google Apps Script HTML file. -->
-  <iframe id="game" title="Eaglercraft Lite" allow="autoplay; fullscreen; gamepad; pointer-lock; keyboard-map" allowfullscreen referrerpolicy="no-referrer" src="https://cdn.jsdelivr.net/gh/StaticQuasar931/26.2@main/cleaglercraftlite.html"></iframe>
-  <div id="fallback" hidden>Game failed to load. <a href="https://cdn.jsdelivr.net/gh/StaticQuasar931/26.2@main/cleaglercraftlite.html" target="_blank" rel="noopener">Open the game directly</a>.</div>
+  <div id="status">Loading Eaglercraft Lite...</div>
+  <iframe id="game" title="Eaglercraft Lite" allow="autoplay; fullscreen; gamepad; pointer-lock; keyboard-map" allowfullscreen referrerpolicy="no-referrer" hidden></iframe>
   <script>
-    const frame = document.getElementById('game');
-    const fallback = document.getElementById('fallback');
-    frame.addEventListener('error', () => { frame.hidden = true; fallback.hidden = false; });
+    (() => {
+      const base = 'https://cdn.jsdelivr.net/gh/StaticQuasar931/26.2@main/';
+      const parts = [
+        'cleaglercraftlite.part-001.html',
+        'cleaglercraftlite.part-002.html',
+        'cleaglercraftlite.part-003.html'
+      ];
+      const status = document.getElementById('status');
+      const frame = document.getElementById('game');
+
+      const fail = (error) => {
+        console.error('Unable to load the Eaglercraft Lite chunks.', error);
+        status.className = 'error';
+        status.innerHTML = 'The game could not be loaded. Check that all chunk files are in the 26.2 GitHub repository.';
+      };
+
+      Promise.all(parts.map((part) => fetch(base + part).then((response) => {
+        if (!response.ok) throw new Error(`${part}: HTTP ${response.status}`);
+        return response.text();
+      }))).then((chunks) => {
+        const game = new Blob(chunks, { type: 'text/html' });
+        frame.src = URL.createObjectURL(game);
+        frame.hidden = false;
+        frame.addEventListener('load', () => { status.hidden = true; }, { once: true });
+      }).catch(fail);
+    })();
   </script>
 </body>
 </html>

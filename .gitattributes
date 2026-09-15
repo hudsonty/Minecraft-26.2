@@ -1,2 +1,2 @@
-# Auto detect text files and perform LF normalization
-* text=auto
+# Split game payloads are byte-sensitive and must not receive Git line-ending conversion.
+*.part-*.html binary
